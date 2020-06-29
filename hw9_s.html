@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hw9 Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        .globalCalc {
+            position: absolute;
+            background-color: black;
+            width: 730px;
+            padding: 10px;
+        }
+        .visualDigits p{
+            box-sizing: border-box;
+            margin: 5px 5px 10px 5px;
+            width: 718px;
+            height: 50px;
+            padding: 5px;
+            background-color: rgb(93, 93, 93);
+            border: none;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: rgb(21, 255, 21);
+            text-shadow: 0 0 8px rgb(92, 231, 92);
+            text-align: right;
+        }
+        .btn {
+            width: 169px;
+            height: 70px;
+            box-sizing: border-box;
+            background-color: rgb(212, 212, 212);
+            color: rgb(0, 0, 0);
+            font-size: 1.3rem;
+            margin: 5px;
+            text-align: center;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+        .btn:hover {
+            background-color: rgb(172, 172, 172);
+        }
+        .btn:first-child {
+            color: red;
+        }
+        .btn2 {
+            bottom: 10px;
+            right: 12px;
+            position: absolute;
+            width: 352px;        
+        }
+    </style>
+</head>
+<body>
+    <div class="globalCalc">
+        <div class="visualDigits">
+            <p id="out1">Погнали...</p>
+        </div>
+        <div class="buttonCalc">
+            <input class="btn" type="button" name="clr" onclick="clr()" value="C">
+            <input class="btn" type="button" name="pow" onclick="operationNow('**')" value="Xª">
+            <input class="btn" type="button" name="percent" onclick="operationNow('/100*')" value="%">
+            <input class="btn" type="button" name="divide" onclick="operationNow('/')" value="÷">
+            <input class="btn" type="button" name="7" onclick="digit(7)" value="7">
+            <input class="btn" type="button" name="8" onclick="digit(8)" value="8">
+            <input class="btn" type="button" name="9" onclick="digit(9)" value="9">
+            <input class="btn" type="button" name="mult" onclick="operationNow('*')" value="×">
+            <input class="btn" type="button" name="4" onclick="digit(4)" value="4">
+            <input class="btn" type="button" name="5" onclick="digit(5)" value="5">
+            <input class="btn" type="button" name="6" onclick="digit(6)" value="6">
+            <input class="btn" type="button" name="minus" onclick="operationNow('-')" value="–">
+            <input class="btn" type="button" name="1" onclick="digit(1)" value="1">
+            <input class="btn" type="button" name="2" onclick="digit(2)" value="2">
+            <input class="btn" type="button" name="3" onclick="digit(3)" value="3">
+            <input class="btn" type="button" name="plus" onclick="operationNow('+')" value="+">
+            <input class="btn" type="button" name="0" onclick="digit(0)" value="0">
+            <input class="btn" type="button" name="dot" onclick="digit('.')" value=".">
+            <input class="btn btn2" type="button" name="ans" onclick="ans()" value="=">
+        </div>    
+    </div>
+    <script>
+        let digitsInput = []; //массив нажатий
+        let operand1 = 0; //число1
+        let operand2 = 0; //число2
+        let todo = '+'; //операция, плюс решает вопрос с NaN при нажатии "=" в самом начале
+        let fullAnswer = ''; //для ответа
+
+        //функция передает нажатые символы
+        function digit(n) {
+            if (digitsInput[0] === 0 && digitsInput.length == 1 && n === 0) {
+                return; //убираем невозможные ноли в начале цифр
+            };
+            if (n == '.' && digitsInput.includes('.')) {
+                return out1.innerHTML = out1.innerHTML; //не даем вставить невозможные десятичные точки
+            };
+            digitsInput.push(n);
+            operand2 = digitsInput.toString().replace(/,/g, "");
+            return out1.innerHTML = operand2;
+        };   
+        //функция передает операцию
+        function operationNow(o) {
+            if (o == '-' && digitsInput.length == 0) {
+                return digitsInput.push('-');
+            };            
+            todo = o;            
+            if (o === '/100*') {out1.innerHTML = '%'}; //просто для красоты
+            if (o === '**') {out1.innerHTML = 'ª'}; //просто для красоты
+            if (o === '*') {out1.innerHTML = '×'}; //просто для красоты
+            if (o === '/') {out1.innerHTML = '÷'}; //просто для красоты
+            if (o === '-') {out1.innerHTML = '–'}; //просто для красоты
+            if (o === '+') {out1.innerHTML = '+'}; //просто для красоты
+            operand1 = (fullAnswer == '' ? operand2 : fullAnswer);
+            return digitsInput = [];
+        };
+        //функция считает
+        function ans() {
+            let x;
+            if (operand1 < 0 && todo === '**') {
+                x = (operand1)**operand2; //решили неточность в операторе **
+            } else {
+                x = Function('return ' + (operand1 + todo + operand2))();
+            };
+            fullAnswer = x.toFixed(14).replace(/\.?0*$/,''); //решение для проблем с плавающей точкой
+            out1.innerHTML = (fullAnswer == Infinity ? 'Вот и бесконечность :)' : fullAnswer);
+            if (isNaN(fullAnswer)) {out1.innerHTML = 'Ошибка'};
+            digitsInput = [];
+            return operand1 = fullAnswer;
+        };
+        //функция кнопки очистки
+        function clr() {
+            digitsInput = [];
+            operand1 = 0;
+            operand2 = 0;
+            todo = "+";
+            fullAnswer = '';
+            return out1.innerHTML = '█';
+        };
+    </script>
+</body>
+</html>
