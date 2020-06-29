@@ -95,13 +95,13 @@
                 return out1.innerHTML = out1.innerHTML; //не даем вставить невозможные десятичные точки
             };
             digitsInput.push(n);
-            operand2 = digitsInput.toString().replace(/,/g, "");
-            return out1.innerHTML = operand2;
+            operand2 = digitsInput.toString().replace(/,/g, ""); //делаем из массива число
+            return out1.innerHTML = operand2; //ввыводим
         };   
         //функция передает операцию
         function operationNow(o) {
             if (o == '-' && digitsInput.length == 0) {
-                return digitsInput.push('-');
+                return digitsInput.push('-');//не даем накидать кучу минусов перед числом
             };            
             todo = o;            
             if (o === '/100*') {out1.innerHTML = '%'}; //просто для красоты
@@ -110,22 +110,22 @@
             if (o === '/') {out1.innerHTML = '÷'}; //просто для красоты
             if (o === '-') {out1.innerHTML = '–'}; //просто для красоты
             if (o === '+') {out1.innerHTML = '+'}; //просто для красоты
-            operand1 = (fullAnswer == '' ? operand2 : fullAnswer);
+            operand1 = (fullAnswer == '' ? operand2 : fullAnswer);//перкидываем операторы и делаем ожидаемую логигу кнопки равно
             return digitsInput = [];
         };
         //функция считает
         function ans() {
             let x;
             if (operand1 < 0 && todo === '**') {
-                x = (operand1)**operand2; //решили неточность в операторе **
+                x = (operand1)**operand2; //исправляем неточность в операторе ** который не умеет возводить вс тепень минусовые числа
             } else {
                 x = Function('return ' + (operand1 + todo + operand2))();
             };
-            fullAnswer = x.toFixed(14).replace(/\.?0*$/,''); //решение для проблем с плавающей точкой
-            out1.innerHTML = (fullAnswer == Infinity ? 'Вот и бесконечность :)' : fullAnswer);
-            if (isNaN(fullAnswer)) {out1.innerHTML = 'Ошибка'};
+            fullAnswer = x.toFixed(14).replace(/\.?0*$/,''); //решение проблемы точности операций с плавающей точкой
+            out1.innerHTML = (fullAnswer == Infinity ? 'Вот и бесконечность :)' : fullAnswer);//просто прикол
+            if (isNaN(fullAnswer)) {out1.innerHTML = 'Ошибка'}; //просто для красоты
             digitsInput = [];
-            return operand1 = fullAnswer;
+            return operand1 = fullAnswer; //ожидаемая логика кнопки равно
         };
         //функция кнопки очистки
         function clr() {
@@ -134,7 +134,7 @@
             operand2 = 0;
             todo = "+";
             fullAnswer = '';
-            return out1.innerHTML = '█';
+            return out1.innerHTML = '█'; // просто прикол
         };
     </script>
 </body>
